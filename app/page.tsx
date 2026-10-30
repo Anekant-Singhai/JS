@@ -3,6 +3,7 @@ import { ReportDemo } from "@/components/report-demo";
 import { Marquee } from "@/components/ui/marquee";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/section-heading";
+import { SiteModel } from "@/components/site-model";
 import { audiences, offers } from "@/lib/offers";
 import { boundaries, categories, groups, totalServices } from "@/lib/services";
 
@@ -29,6 +30,12 @@ const comparison = [
   { label: "Traditional back-office", points: ["Manual and slow", "Same process, every time", "Hours billed for routine work"] },
   { label: "DIY AI tools", points: ["Fast but unchecked", "Confident, generic mistakes", "No context, nobody accountable"] },
   { label: "A-Z Enterprises", points: ["AI speed, human review", "Tailored to your process", "One accountable partner"], us: true },
+];
+
+const modelPoints = [
+  { title: "Photogrammetry", body: "3D models built from site or drone photos, measurable and shareable." },
+  { title: "Progress visuals", body: "What's complete, what's underway, and what's next, readable at a glance." },
+  { title: "GIS mapping", body: "Contours, boundaries, and location analysis on one clean map." },
 ];
 
 const steps = [
@@ -144,6 +151,39 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Site, GIS & 3D showcase */}
+      <section className="border-t border-line">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Site, GIS & 3D"
+              title={<>See the whole site <em>at a glance</em>.</>}
+              body="Drawings, drone photos, and survey data turned into models and maps your whole team can read."
+            />
+            <ul className="mt-10 space-y-6">
+              {modelPoints.map((p, i) => (
+                <li key={p.title} className="flex gap-5 border-t border-line pt-5">
+                  <span className="font-serif text-xl italic text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="font-medium text-ink">{p.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-2">{p.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={`/contact/?service=${encodeURIComponent("Site, GIS & 3D")}`}
+              className="mt-10 inline-block rounded-full border border-ink/20 px-6 py-3.5 font-medium text-ink transition-colors hover:border-ink"
+            >
+              Enquire about 3D & GIS
+            </Link>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <SiteModel />
+          </Reveal>
         </div>
       </section>
 

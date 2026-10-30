@@ -4,20 +4,15 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Edges, Html, Line, OrbitControls } from "@react-three/drei";
+import { ACCENT, FloorLines, INK, MODEL, ModelLights, PAPER, SoftShadow, type Point } from "./scene-kit";
 
 // Illustrative site (not a client record): an architectural "white model" on a
 // contour-map terrain, blocks coloured by status, a crane, and a drone survey loop.
 // Loaded lazily by components/site-model.tsx so three.js never delays the page.
 
-const INK = "#111315";
-const ACCENT = "#E4572E";
-const PAPER = "#F7F4EE";
-const MODEL = "#FCFBF8";
 const PAD = 3; // radius of the flat building pad
 const RADIUS = 7.5; // terrain radius; fades out towards the edge
-const FLOOR = 0.32; // floor-to-floor height for the floor lines
 
-type Point = [number, number, number];
 type Status = "complete" | "progress" | "planned";
 type Block = { id: string; x: number; z: number; w: number; d: number; h: number; status: Status; progress?: number };
 
@@ -106,50 +101,6 @@ function Terrain() {
     [],
   );
   return <mesh geometry={geometry} material={material} renderOrder={-1} />;
-}
-
-// Soft contact shadow under a footprint, like the shading on a physical model.
-function SoftShadow({ w, d }: { w: number; d: number }) {
-  const m = 0.55;
-  const texture = useMemo(() => {
-    const size = 64;
-    const data = new Uint8Array(size * size * 4);
-    for (let j = 0; j < size; j++) {
-      for (let i = 0; i < size; i++) {
-        const x = Math.abs(((i + 0.5) / size - 0.5) * (w + m * 2)) - w / 2;
-        const z = Math.abs(((j + 0.5) / size - 0.5) * (d + m * 2)) - d / 2;
-        const fade = 1 - Math.min(Math.hypot(Math.max(x, 0), Math.max(z, 0)) / m, 1);
-        const k = (j * size + i) * 4;
-        data[k] = data[k + 1] = data[k + 2] = 255;
-        data[k + 3] = fade * fade * 255;
-      }
-    }
-    const t = new THREE.DataTexture(data, size, size);
-    t.magFilter = t.minFilter = THREE.LinearFilter;
-    t.needsUpdate = true;
-    return t;
-  }, [w, d]);
-  return (
-    <mesh rotation-x={-Math.PI / 2} position-y={0.01} renderOrder={1}>
-      <planeGeometry args={[w + m * 2, d + m * 2]} />
-      <meshBasicMaterial map={texture} color={INK} transparent opacity={0.2} depthWrite={false} />
-    </mesh>
-  );
-}
-
-function FloorLines({ w, d, h, color, opacity }: { w: number; d: number; h: number; color: string; opacity: number }) {
-  const points = useMemo(() => {
-    const pts: Point[] = [];
-    const x = w / 2 + 0.004;
-    const z = d / 2 + 0.004;
-    for (let y = FLOOR; y < h - 0.05; y += FLOOR) {
-      const c: Point[] = [[-x, y, -z], [x, y, -z], [x, y, z], [-x, y, z]];
-      c.forEach((p, i) => pts.push(p, c[(i + 1) % 4]));
-    }
-    return pts;
-  }, [w, d, h]);
-  if (!points.length) return null;
-  return <Line points={points} segments color={color} lineWidth={1} transparent opacity={opacity} />;
 }
 
 function BlockModel({ b, reduce }: { b: Block; reduce: boolean }) {
@@ -314,10 +265,7 @@ export default function SiteModelScene({
         </div>
       }
     >
-      {/* Bright, soft light so the blocks read as a white card model: lit faces near white, far faces pale grey. */}
-      <ambientLight intensity={0.7} />
-      <hemisphereLight args={["#ffffff", "#e9e2d4", 1.3]} />
-      <directionalLight position={[-5, 9, 4]} intensity={2.6} />
+      <ModelLights />
       <Site reduce={reduce} />
       {/* Drag-to-rotate on mouse/trackpad only, so the model never traps page scrolling on phones. */}
       {interactive && (

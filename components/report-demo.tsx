@@ -22,12 +22,13 @@ export function ReportDemo() {
       ? {}
       : {
           initial: { opacity: 0, y: 6 },
-          animate: { opacity: 1, y: 0 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: "-80px" },
           transition: { delay: 0.6 + i * 0.35, duration: 0.4 },
         };
 
   return (
-    <div className="relative">
+    <div className="relative isolate">
       <div className="absolute -inset-3 -z-10 rotate-2 rounded-[28px] bg-accent/15" aria-hidden="true" />
       <div className="rounded-3xl border border-line bg-white p-5 shadow-[0_30px_60px_-30px_rgba(17,19,21,0.35)] sm:p-6">
         <div className="flex items-start justify-between gap-4">
@@ -83,7 +84,8 @@ export function ReportDemo() {
           <motion.span
             className="shrink-0 whitespace-nowrap rotate-[-6deg] rounded-md border-2 border-moss px-2.5 py-1 font-serif text-sm italic text-moss"
             initial={reduce ? undefined : { opacity: 0, scale: 1.6 }}
-            animate={reduce ? undefined : { opacity: 1, scale: 1 }}
+            whileInView={reduce ? undefined : { opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
             transition={{ delay: 0.6 + (rows.length + 1) * 0.35 + 0.2, type: "spring", stiffness: 300, damping: 15 }}
           >
             Reviewed &amp; signed off

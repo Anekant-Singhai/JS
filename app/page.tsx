@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroModel } from "@/components/hero-model";
 import { ReportDemo } from "@/components/report-demo";
 import { Marquee } from "@/components/ui/marquee";
 import { Reveal } from "@/components/ui/reveal";
@@ -79,7 +80,7 @@ export default function Home() {
             </div>
             <p className="mt-6 text-sm text-ink-3">No long contracts. Start with one report, one tender, or one tracker.</p>
           </div>
-          <ReportDemo />
+          <HeroModel />
         </div>
 
         <div className="border-y border-line bg-paper-2/60 py-4">
@@ -190,14 +191,19 @@ export default function Home() {
       {/* Human + AI positioning (dark band) */}
       <section className="bg-ink text-paper">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-          <Reveal>
-            <SectionHeading
-              dark
-              eyebrow="Why A-Z"
-              title={<>AI won&apos;t replace good work. It makes <em className="text-accent">good people faster</em>.</>}
-              body="Anyone can open an AI tool. Knowing what to ask, what to trust, and what to fix takes experience. That's what you hire us for."
-            />
-          </Reveal>
+          <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.05fr]">
+            <Reveal>
+              <SectionHeading
+                dark
+                eyebrow="Why A-Z"
+                title={<>AI won&apos;t replace good work. It makes <em className="text-accent">good people faster</em>.</>}
+                body="Anyone can open an AI tool. Knowing what to ask, what to trust, and what to fix takes experience. That's what you hire us for."
+              />
+            </Reveal>
+            <Reveal delay={0.1}>
+              <ReportDemo />
+            </Reveal>
+          </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-3xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
             {pillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 0.06} className="bg-ink p-7">
